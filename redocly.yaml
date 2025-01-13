@@ -1,0 +1,10 @@
+# See https://redocly.com/docs/cli/configuration/
+
+apis:
+  mysilae-api-client@v1:
+    root: ./swagger-api.yml
+
+  mysilae-auth-client@v1:
+    root: ./swagger-auth.yml
+extends:
+  - minimal

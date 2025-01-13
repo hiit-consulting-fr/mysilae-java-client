@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mysilae-java-client</artifactId>
+    <groupId>fr.hiitconsulting</groupId>
+    <version>v1-SNAPSHOT</version>
+
+    <name>${project.artifactId}</name>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Dependency versions -->
+        <ms-parent.version>1.19.0</ms-parent.version>
+        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+
+        <!-- Plugin versions -->
+        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
+    </properties>
+
+    <scm>
+        <url>https://github.com/hiit-consulting-fr/mysilae-java-client</url>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/hiit-consulting-fr/mysilae-java-client</url>
+    </issueManagement>
+
+    <ciManagement>
+        <url>https://github.com/hiit-consulting-fr/mysilae-java-client/actions</url>
+    </ciManagement>
+
+    <organization>
+        <name>Hi!t Consulting</name>
+        <url>https://www.hiit-consulting.fr</url>
+    </organization>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>fr.hiitconsulting</groupId>
+                <artifactId>ms-parent</artifactId>
+                <version>${ms-parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Others -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven-clean-plugin.version}</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>gen</directory>
+                            <excludes>
+                                <exclude>**/.openapi-generator-ignore</exclude>
+                                <exclude>**/maven.config</exclude>
+                            </excludes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate.mysilae.api.client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>swagger-api.yml</inputSpec>
+                            <output>${project.basedir}/gen</output>
+                            <generatorName>java</generatorName>
+                            <apiPackage>${project.groupId}.mysilae.client.api</apiPackage>
+                            <modelPackage>${project.groupId}.mysilae.client.model</modelPackage>
+                            <invokerPackage>${project.groupId}.mysilae.client.invoker</invokerPackage>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>mysilae-java-client</artifactId>
+                            <artifactVersion>${project.version}</artifactVersion>
+                            <skipValidateSpec>true</skipValidateSpec>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>resttemplate</library>
+                                <useJakartaEe>true</useJakartaEe>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate.mysilae.auth.api.client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>swagger-auth.yml</inputSpec>
+                            <output>${project.basedir}/gen</output>
+                            <generatorName>java</generatorName>
+                            <apiPackage>${project.groupId}.mysilae.client.auth.api</apiPackage>
+                            <modelPackage>${project.groupId}.mysilae.client.auth.model</modelPackage>
+                            <invokerPackage>${project.groupId}.mysilae.client.auth.invoker</invokerPackage>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>mysilae-java-client</artifactId>
+                            <artifactVersion>${project.version}</artifactVersion>
+                            <skipValidateSpec>true</skipValidateSpec>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>resttemplate</library>
+                                <useJakartaEe>true</useJakartaEe>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Hi!t Consulting Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/hiit-consulting-fr/mysilae-java-client</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/hiit-consulting-fr/ms-parent</url>
+        </repository>
+    </repositories>
+</project>

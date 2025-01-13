@@ -1,0 +1,205 @@
+swagger: '2.0'
+info:
+  title: 'MySilae Auth API'
+  description: |
+    ## Welcome to MySilae Auth API Client
+    ### Authenticate your API
+
+    ### Startup guide
+    #### 1 Pre-requisities
+    you need to have called with the previous api before the token hint route to get the token hint and be able to call following routes in order
+
+  version: v1
+host: "signin.my.silae.fr"
+basePath: "/d4f38610-a107-482b-a240-c9ed73f434b4/oauth2/v2.0"
+schemes:
+  - "https"
+paths:
+  /authorize:
+    post:
+      tags:
+        - mysilae-auth
+      operationId: init_authorize
+      summary: "Initiate OAuth2 Authorization"
+      description: >
+        Initiates the OAuth2 authorization flow using an `id_token_hint` for authentication.
+        This flow is part of the Silae B2C headless migration process.
+      consumes:
+        - "application/x-www-form-urlencoded"
+      parameters:
+        - in: "query"
+          name: "p"
+          required: true
+          type: "string"
+          enum:
+            - "B2C_1A_MYSILAE_HEADLESS_MIGRATION"
+          description: >
+            The policy parameter used in the Silae B2C headless migration process.
+        - in: "formData"
+          name: "id_token_hint"
+          required: true
+          type: "string"
+          description: >
+            The ID token hint to identify the user. Example: `{{id_token_hint-MySilae}}`.
+        - in: "formData"
+          name: "client_id"
+          required: true
+          type: "string"
+          description: >
+            The client ID for the application initiating the OAuth2 authorization flow.
+            Example: `467f7....`.
+        - in: "query"
+          name: "nonce"
+          required: true
+          type: "string"
+          description: >
+            A nonce value to associate a client session with an ID token and mitigate replay attacks.
+            Example: `defaultNonce`.
+        - in: "formData"
+          name: "redirect_uri"
+          required: true
+          type: "string"
+          description: >
+            The URI to redirect the user after the authorization process is complete.
+            Example: `https://my.silae.fr/sign-in`.
+        - in: "formData"
+          name: "scope"
+          required: true
+          type: "string"
+          description: >
+            The scope of the requested permissions. Example: `openid`.
+        - in: "formData"
+          name: "response_type"
+          required: true
+          type: "string"
+          enum:
+            - "id_token"
+          description: >
+            The type of response expected from the authorization flow. Must be `id_token`.
+        - in: "formData"
+          name: "response_mode"
+          required: true
+          type: "string"
+          enum:
+            - "form_post"
+          description: >
+            The method of returning the result. Must be `form_post`.
+      responses:
+        200:
+          description: >
+            Authorize the user
+        302:
+          description: >
+            Redirects the user to the specified `redirect_uri` with the `id_token` in the response.
+        400:
+          description: >
+            Bad Request - Missing or invalid parameters in the request.
+        401:
+          description: >
+            Unauthorized - Invalid or expired `id_token_hint`.
+        500:
+          description: >
+            Internal server error
+
+  /token:
+    post:
+      tags:
+        - mysilae-auth
+      operationId: get_token
+      summary: "Obtain OAuth2 Tokens"
+      description: >
+        Authenticates a user using their username and password and exchanges the credentials
+        for an access token, ID token, and refresh token.
+      consumes:
+        - "application/x-www-form-urlencoded"
+      parameters:
+        - in: "query"
+          name: "p"
+          required: true
+          type: "string"
+          enum:
+            - "B2C_1A_MYSILAE_HEADLESS_SIGNIN"
+          description: >
+            The policy parameter used in the Silae B2C headless sign-in process.
+        - in: "formData"
+          name: "username"
+          required: true
+          type: "string"
+          description: >
+            The username for authentication. Example: `{{mySilae-username}}`.
+        - in: "formData"
+          name: "password"
+          required: true
+          type: "string"
+          description: >
+            The password for authentication. Example: `{{mySilae-password}}`.
+        - in: "formData"
+          name: "client_id"
+          required: true
+          type: "string"
+          description: >
+            The client ID for the application requesting the tokens.
+            Example: `467f....`.
+        - in: "formData"
+          name: "scope"
+          required: true
+          type: "string"
+          description: >
+            The scope of the requested permissions. Example:
+            `openid 467... offline_access`.
+        - in: "formData"
+          name: "response_type"
+          required: true
+          type: "string"
+          enum:
+            - "token id_token"
+          description: >
+            The type of response expected from the authentication flow.
+            Must include both `token` and `id_token`.
+        - in: "formData"
+          name: "grant_type"
+          required: true
+          type: "string"
+          enum:
+            - "password"
+          description: >
+            The grant type used for authentication. Must be `password`.
+      responses:
+        200:
+          description: >
+            A successful response containing the access token, ID token, refresh token,
+            and additional metadata about the tokens.
+          schema:
+            type: "object"
+            properties:
+              access_token:
+                type: "string"
+                description: >
+                  The access token issued for the authenticated user.
+              token_type:
+                type: "string"
+                example: "Bearer"
+                description: >
+                  The type of token issued. Example: `Bearer`.
+              expires_in:
+                type: "integer"
+                example: 3600
+                description: >
+                  The duration in seconds until the access token expires.
+              refresh_token:
+                type: "string"
+                description: >
+                  The refresh token used to obtain new tokens.
+              id_token:
+                type: "string"
+                description: >
+                  The ID token containing user information in JWT format.
+        400:
+          description: >
+            Bad Request - Missing or invalid parameters in the request.
+        401:
+          description: >
+            Unauthorized - Invalid username or password.
+        500:
+          description: >
+            Internal server error

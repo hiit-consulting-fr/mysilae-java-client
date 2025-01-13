@@ -1,0 +1,18 @@
+### IDE files
+.idea/*
+!.idea/runConfigurations
+!.idea/codeStyles
+!.idea/inspectionProfiles
+*.iml
+
+### Maven ###
+target/
+
+### gen ###
+gen/*
+!gen/.openapi-generator-ignore
+!gen/.mvn/maven.config
+
+### Node ###
+node_modules
+package-lock.json
