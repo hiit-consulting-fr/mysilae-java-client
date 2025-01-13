@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    registries:
+      - maven-github
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+registries:
+  maven-github:
+    type: maven-repository
+    url: https://maven.pkg.github.com/hiit-consulting-fr/ms-parent
+    username: ${{ vars.MAVEN_USER }}
+    password: ${{ secrets.MAVEN_PASSWORD }}

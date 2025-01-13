@@ -1,0 +1,433 @@
+swagger: '2.0'
+info:
+  title: 'MySilae Client API'
+  description: |
+    ## Welcome to MySilae API Client
+    ### Authenticate your API
+    Authentication is done via a Bearer Token in the Authorization header. Every call has to be authenticated with an API Token.
+    Example header:
+    `Authorization: Bearer <your token>`
+    ### Startup guide
+    #### 1 Pre-requisities
+    Before you can use the MySilae API, you need to have a user created there and authenticate it with the Mysilae auth client to retrieve token
+
+  version: v1
+host: api.my.silae.fr
+schemes:
+  - https
+basePath:
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    in: header
+    name: Authorization
+paths:
+  /v1/authenticate/b2c/id-token-hint:
+    post:
+      tags:
+        - mysilae
+      operationId: "get_id_token_hint"
+      summary: "Authenticate user and retrieve JWT"
+      description: "Authenticates a user with their login and password and returns a JWT for session management."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Login credentials for authentication"
+          required: true
+          schema:
+            $ref: "#/definitions/AuthenticationRequest"
+      responses:
+        200:
+          description: "Successful authentication"
+          schema:
+            $ref: "#/definitions/AuthenticationResponse"
+        401:
+          description: "Unauthorized - Invalid login or password"
+        500:
+          description: "Internal server error"
+  /v1/authenticate/bearer:
+    get:
+      tags:
+        - mysilae
+      operationId: authenticate_bearer_token
+      summary: "Get bearer token"
+      description: "Validates the provided Bearer token and returns user information along with company details. Also sets authentication-related cookies."
+      parameters:
+        - in: "query"
+          name: "type"
+          required: true
+          type: "string"
+          enum:
+            - "v2"
+          description: "Specifies the version of the authentication mechanism. Must be 'v2'."
+        - in: "header"
+          name: "Authorization"
+          required: true
+          type: "string"
+          description: "Bearer token for authentication. Format: 'Bearer {{accessTokenMySilae}}'."
+      responses:
+        200:
+          description: "Successful validation of Bearer token"
+          headers:
+            'Set-Cookie':
+              type: "string"
+              description: >
+                Authentication cookies set by the server. Example:
+                ```
+                mys-bearer=eyJhbGciOiJIUzI1NiJ9.eyJ...; Path=/; Max-Age=3600; Expires=Tue, 07 Jan 2025 14:40:19 GMT; Secure; HttpOnly;
+                ASLBSA=00038911...; Path=/; Secure; HttxpOnly;
+                ASLBSACORS=00038911eb0...; SameSite=none; Path=/; Secure; HttpOnly;
+                ```
+          schema:
+            $ref: "#/definitions/UserResponse"
+        401:
+          description: "Unauthorized - Invalid or expired Bearer token"
+        400:
+          description: "Bad Request - Missing or invalid parameters"
+        500:
+          description: "Internal server error"
+
+
+  /v2/managed-companies/leave-days:
+    get:
+      tags:
+        - mysilae
+      operationId: get_leave_days_details
+      summary: Get leave days
+      description: Get leave days for specified dates for all employees
+      parameters:
+        - name: companies
+          in: query
+          required: true
+          type: integer
+        - name: groupType
+          in: query
+          description: ''
+          required: true
+          type: string
+        - name: start
+          in: query
+          description: 'start date format YYYY-MM-DD'
+          type: string
+          required: true
+        - name: end
+          in: query
+          description: 'end date format YYYY-MM-DD'
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 'display of all leave days in selected period for all users'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/leaveDays'
+
+  /v1/companies/{companyId}/employees/details:
+    get:
+      tags:
+        - mysilae
+      summary: Get Employee Details
+      operationId: get_employees_details
+      description: Retrieve detailed information about employees for a specific company.
+      produces:
+        - application/json
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: Unique identifier of the company.
+          type: integer
+      responses:
+        200:
+          description: Successful response with employee details.
+          schema:
+            type: array
+            items:
+                  $ref: '#/definitions/EmployeesDetails'
+        400:
+          description: Bad Request - Invalid input or missing parameters.
+        403:
+          description: Forbidden, user doesn't have correct rights to view this information
+        404:
+          description: Not Found - Company not found.
+        500:
+          description: Internal Server Error - An unexpected error occurred.
+
+definitions:
+  AuthenticationRequest:
+    type: "object"
+    required:
+      - login
+      - password
+    properties:
+      login:
+        type: "string"
+        example: "{{mySilae-username}}"
+        description: "User's login or email address"
+      password:
+        type: "string"
+        example: "{{mySilae-password}}"
+        description: "User's password"
+  AuthenticationResponse:
+    type: "object"
+    properties:
+      jwt:
+        type: "string"
+        example: "eyJhbGci..."
+        description: "JWT token for authenticated session"
+  leaveDays:
+    type: object
+    properties:
+      companyId:
+        type: integer
+        description: The ID of the company.
+      id:
+        type: string
+        description: Unique identifier for the leave.
+      externalId:
+        type: integer
+        description: External ID associated with the leave.
+      uuid:
+        type: string
+        description: Unique identifier for the leave (UUID format).
+      start:
+        type: string
+        format: date
+        description: Start date of the leave.
+      end:
+        type: string
+        format: date
+        description: End date of the leave.
+      typeCode:
+        type: string
+        description: Code representing the type of leave.
+      typeGroupLabel:
+        type: string
+        description: Label for the leave type group.
+      label:
+        type: string
+        description: Description of the leave type.
+      isInPayslip:
+        type: boolean
+        description: Indicates if the leave is included in the payslip.
+      employeeId:
+        type: integer
+        description: Unique identifier of the employee.
+      color:
+        type: integer
+        description: Color code associated with the leave type.
+      employeeName:
+        type: string
+        description: Full name of the employee.
+      employeeFirstName:
+        type: string
+        description: First name of the employee.
+      employeeLastName:
+        type: string
+        description: Last name of the employee.
+      requestedAt:
+        type: string
+        description: Timestamp of when the leave was requested.
+      requestedBy:
+        type: string
+        description: Email of the person who requested the leave.
+      approvedAt:
+        type: string
+        description: Timestamp of when the leave was approved.
+      approvedBy:
+        type: string
+        description: Email of the person who approved the leave.
+      belongsToPrincipal:
+        type: boolean
+        description: Indicates if the leave belongs to a principal user.
+      isRestricted:
+        type: boolean
+        description: Indicates if the leave is restricted.
+      isDeletable:
+        type: boolean
+        description: Indicates if the leave can be deleted.
+      isCancellable:
+        type: boolean
+        description: Indicates if the leave can be cancelled.
+      isApprovable:
+        type: boolean
+        description: Indicates if the leave can be approved.
+      isUpdatable:
+        type: boolean
+        description: Indicates if the leave can be updated.
+      status:
+        type: string
+        description: Current status of the leave.
+      history:
+        type: array
+        description: History of actions performed on the leave.
+        items:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status at the time of the event.
+            actor:
+              type: object
+              description: The person who performed the action.
+              properties:
+                firstname:
+                  type: string
+                  description: First name of the actor.
+                lastname:
+                  type: string
+                  description: Last name of the actor.
+            event:
+              type: string
+              description: Event that occurred (e.g., APPROVE, SUBMIT).
+            typeLabel:
+              type: string
+              description: Description of the leave type.
+            typeCode:
+              type: string
+              description: Code representing the leave type.
+            typeGroupLabel:
+              type: string
+              description: Group label for the leave type.
+            date:
+              type: string
+              description: Timestamp of the event.
+            isHalfDay:
+              type: boolean
+              description: Indicates if the leave was for half a day.
+            isHours:
+              type: boolean
+              description: Indicates if the leave was measured in hours.
+            start:
+              type: string
+              format: date
+              description: Start date of the leave in the event.
+            end:
+              type: string
+              format: date
+              description: End date of the leave in the event.
+            dateOption:
+              type: string
+              description: Specifies if the leave was FULL, HALF_DAY, etc.
+      isHalfDay:
+        type: boolean
+        description: Indicates if the leave is for half a day.
+      isHours:
+        type: boolean
+        description: Indicates if the leave is measured in hours.
+      hours:
+        type: integer
+        description: Number of hours associated with the leave.
+      files:
+        type: array
+        description: Attached files for the leave.
+        items:
+          type: object
+          description: Placeholder for file metadata (if applicable).
+  UserResponse:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Louis DUMONT"
+      login:
+        type: "string"
+        example: "louis.dumont@hiit-consulting.fr"
+      firstname:
+        type: "string"
+        example: "Louis"
+      lastname:
+        type: "string"
+        example: "DUMONT"
+      lang:
+        type: "string"
+        example: "fr"
+      companies:
+        type: "array"
+        items:
+          $ref: "#/definitions/Company"
+  Company:
+    type: "object"
+    properties:
+      companyName:
+        type: "string"
+        example: "HUMAN INNOVATION INSIDE TECHNOLOGY"
+      features:
+        type: "array"
+        items:
+          type: "string"
+          example: "PAYSLIP_VIEW"
+      companyId:
+        type: "integer"
+        example: 3016
+      isEmployee:
+        type: "boolean"
+        example: true
+      isManager:
+        type: "boolean"
+        example: false
+      isOwnManager:
+        type: "boolean"
+        example: false
+      isAdmin:
+        type: "boolean"
+        example: false
+      trackingContext:
+        $ref: "#/definitions/TrackingContext"
+  TrackingContext:
+    type: "object"
+    properties:
+      platformId:
+        type: "string"
+        example: "www.silaexpert01.fr"
+      domainId:
+        type: "integer"
+        example: 5
+      companyId:
+        type: "integer"
+        example: 3016
+  EmployeesDetails:
+    type: object
+    properties:
+      employeeId:
+        type: integer
+        description: Unique identifier of the employee.
+      registrationNumber:
+        type: string
+        description: Registration number of the employee.
+      firstName:
+        type: string
+        description: First name of the employee.
+      lastName:
+        type: string
+        description: Last name of the employee.
+      professionalEmail:
+        type: string
+        format: email
+        description: Professional email address of the employee.
+      personalEmail:
+        type: string
+        format: email
+        description: Personal email address of the employee.
+      preferredEmail:
+        type: string
+        enum:
+          - PROFESSIONAL
+          - PERSONAL
+        description: Indicates whether the preferred email is professional or personal.
+      mySilaeAccountStatus:
+        type: string
+        enum:
+          - ACTIVE
+          - INACTIVE
+          - PENDING
+        description: Status of the employee's MySilae account.
