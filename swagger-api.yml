@@ -153,7 +153,7 @@ paths:
           schema:
             type: array
             items:
-                  $ref: '#/definitions/EmployeesDetails'
+              $ref: '#/definitions/EmployeesDetails'
         400:
           description: Bad Request - Invalid input or missing parameters.
         403:
@@ -188,37 +188,37 @@ definitions:
   LeaveDays:
     type: object
     required:
-        - companyId
-        - id
-        - externalId
-        - uuid
-        - start
-        - end
-        - typeCode
-        - typeGroupLabel
-        - label
-        - isInPayslip
-        - employeeId
-        - color
-        - employeeName
-        - employeeFirstName
-        - employeeLastName
-        - requestedAt
-        - requestedBy
-        - approvedAt
-        - approvedBy
-        - belongsToPrincipal
-        - isRestricted
-        - isDeletable
-        - isCancellable
-        - isApprovable
-        - isUpdatable
-        - status
-        - history
-        - isHalfDay
-        - isHours
-        - hours
-        - files
+      - companyId
+      - id
+      - externalId
+      - uuid
+      - start
+      - end
+      - typeCode
+      - typeGroupLabel
+      - label
+      - isInPayslip
+      - employeeId
+      - color
+      - employeeName
+      - employeeFirstName
+      - employeeLastName
+      - requestedAt
+      - requestedBy
+      - approvedAt
+      - approvedBy
+      - belongsToPrincipal
+      - isRestricted
+      - isDeletable
+      - isCancellable
+      - isApprovable
+      - isUpdatable
+      - status
+      - history
+      - isHalfDay
+      - isHours
+      - hours
+      - files
     properties:
       companyId:
         type: integer
@@ -430,6 +430,9 @@ definitions:
         example: 3016
   EmployeesDetails:
     type: object
+    required:
+      - employeeId
+      - professionalEmail
     properties:
       employeeId:
         type: integer
