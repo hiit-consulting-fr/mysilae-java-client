@@ -116,11 +116,13 @@ paths:
           in: query
           description: 'start date format YYYY-MM-DD'
           type: string
+          format: date
           required: true
         - name: end
           in: query
           description: 'end date format YYYY-MM-DD'
           type: string
+          format: date
           required: true
       responses:
         '200':
@@ -128,7 +130,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/leaveDays'
+              $ref: '#/definitions/LeaveDays'
 
   /v1/companies/{companyId}/employees/details:
     get:
@@ -183,8 +185,40 @@ definitions:
         type: "string"
         example: "eyJhbGci..."
         description: "JWT token for authenticated session"
-  leaveDays:
+  LeaveDays:
     type: object
+    required:
+        - companyId
+        - id
+        - externalId
+        - uuid
+        - start
+        - end
+        - typeCode
+        - typeGroupLabel
+        - label
+        - isInPayslip
+        - employeeId
+        - color
+        - employeeName
+        - employeeFirstName
+        - employeeLastName
+        - requestedAt
+        - requestedBy
+        - approvedAt
+        - approvedBy
+        - belongsToPrincipal
+        - isRestricted
+        - isDeletable
+        - isCancellable
+        - isApprovable
+        - isUpdatable
+        - status
+        - history
+        - isHalfDay
+        - isHours
+        - hours
+        - files
     properties:
       companyId:
         type: integer
