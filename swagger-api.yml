@@ -216,6 +216,7 @@ definitions:
       - status
       - history
       - isHalfDay
+      - halfDayOption
       - isHours
       - hours
       - files
@@ -354,6 +355,9 @@ definitions:
       isHalfDay:
         type: boolean
         description: Indicates if the leave is for half a day.
+      halfDayOption:
+        type: string
+        description: specifies AFTERNOON OR MORNING
       isHours:
         type: boolean
         description: Indicates if the leave is measured in hours.
