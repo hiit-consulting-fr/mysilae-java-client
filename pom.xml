@@ -6,7 +6,7 @@
 
     <artifactId>mysilae-java-client</artifactId>
     <groupId>fr.hiitconsulting</groupId>
-    <version>v1.1-SNAPSHOT</version>
+    <version>v1-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
 
