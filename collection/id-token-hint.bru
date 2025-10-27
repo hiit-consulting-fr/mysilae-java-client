@@ -1,0 +1,22 @@
+meta {
+  name: id-token-hint
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://api.my.silae.fr/v1/authenticate/b2c/id-token-hint
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "login": "{{mySilae-username}}",
+      "password": "{{mySilae-password}}"
+  }
+}
+
+vars:post-response {
+  id_token_hint-MySilae: res.body.jwt
+}

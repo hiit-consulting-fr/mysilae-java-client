@@ -107,11 +107,7 @@ paths:
           in: query
           required: true
           type: integer
-        - name: groupType
-          in: query
-          description: ''
-          required: true
-          type: string
+        - $ref: "#/parameters/GroupTypeParam"
         - name: start
           in: query
           description: 'start date format YYYY-MM-DD'
@@ -132,12 +128,12 @@ paths:
             items:
               $ref: '#/definitions/LeaveDays'
 
-  /v1/companies/{companyId}/employees/details:
+  /v1/managed-companies/employees:
     get:
       tags:
         - mysilae
-      summary: Get Employee Details
-      operationId: get_employees_details
+      summary: Get Employees
+      operationId: get_employees
       description: Retrieve detailed information about employees for a specific company.
       produces:
         - application/json
@@ -147,13 +143,26 @@ paths:
           required: true
           description: Unique identifier of the company.
           type: integer
+        - $ref: "#/parameters/GroupTypeParam"
+        - name: startDate
+          in: query
+          description: 'start date format YYYY-MM-DD'
+          type: string
+          format: date
+          required: true
+        - name: endDate
+          in: query
+          description: 'end date format YYYY-MM-DD'
+          type: string
+          format: date
+          required: true
       responses:
         200:
           description: Successful response with employee details.
           schema:
             type: array
             items:
-              $ref: '#/definitions/EmployeesDetails'
+              $ref: '#/definitions/Employees'
         400:
           description: Bad Request - Invalid input or missing parameters.
         403:
@@ -162,6 +171,17 @@ paths:
           description: Not Found - Company not found.
         500:
           description: Internal Server Error - An unexpected error occurred.
+
+parameters:
+  GroupTypeParam:
+    name: groupType
+    in: query
+    required: true
+    type: string
+    enum:
+      - TEAM
+      - ME
+    description: 'Group type'
 
 definitions:
   AuthenticationRequest:
@@ -432,15 +452,18 @@ definitions:
       companyId:
         type: "integer"
         example: 3016
-  EmployeesDetails:
+  Employees:
     type: object
     required:
       - employeeId
-      - professionalEmail
+      - email
+      - companyId
     properties:
       employeeId:
         type: integer
         description: Unique identifier of the employee.
+      companyId:
+        type: integer
       registrationNumber:
         type: string
         description: Registration number of the employee.
@@ -450,24 +473,16 @@ definitions:
       lastName:
         type: string
         description: Last name of the employee.
-      professionalEmail:
+      email:
         type: string
         format: email
         description: Professional email address of the employee.
-      personalEmail:
-        type: string
-        format: email
-        description: Personal email address of the employee.
-      preferredEmail:
-        type: string
-        enum:
-          - PROFESSIONAL
-          - PERSONAL
-        description: Indicates whether the preferred email is professional or personal.
-      mySilaeAccountStatus:
+      accountStatus:
         type: string
         enum:
           - ACTIVE
           - INACTIVE
           - PENDING
         description: Status of the employee's MySilae account.
+      isPrincipal:
+        type: boolean

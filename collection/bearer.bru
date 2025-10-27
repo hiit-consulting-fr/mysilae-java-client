@@ -1,0 +1,19 @@
+meta {
+  name: bearer
+  type: http
+  seq: 5
+}
+
+get {
+  url: https://api.my.silae.fr/v1/authenticate/bearer?type=v2
+  body: none
+  auth: bearer
+}
+
+params:query {
+  type: v2
+}
+
+auth:bearer {
+  token: {{accessTokenMySilae}}
+}
