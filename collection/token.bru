@@ -1,0 +1,28 @@
+meta {
+  name: token
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://signin.my.silae.fr/d4f38610-a107-482b-a240-c9ed73f434b4/oauth2/v2.0/token?p=B2C_1A_MYSILAE_HEADLESS_SIGNIN
+  body: formUrlEncoded
+  auth: none
+}
+
+params:query {
+  p: B2C_1A_MYSILAE_HEADLESS_SIGNIN
+}
+
+body:form-urlencoded {
+  username: {{mySilae-username}}
+  password: {{mySilae-password}}
+  client_id: 467f7b0b-7dbe-4139-95f5-46a2d50e693d
+  scope: openid 467f7b0b-7dbe-4139-95f5-46a2d50e693d offline_access
+  response_type: token id_token
+  grant_type: password
+}
+
+vars:post-response {
+  accessTokenMySilae: res.body.id_token
+}

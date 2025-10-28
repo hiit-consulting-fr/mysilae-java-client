@@ -1,0 +1,25 @@
+meta {
+  name: authorize
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://signin.my.silae.fr/d4f38610-a107-482b-a240-c9ed73f434b4/oauth2/v2.0/authorize?p=B2C_1A_MYSILAE_HEADLESS_MIGRATION
+  body: formUrlEncoded
+  auth: none
+}
+
+params:query {
+  p: B2C_1A_MYSILAE_HEADLESS_MIGRATION
+}
+
+body:form-urlencoded {
+  id_token_hint: {{id_token_hint-MySilae}}
+  client_id: 467f7b0b-7dbe-4139-95f5-46a2d50e693d
+  nonce: defaultNonce
+  redirect_uri: https://my.silae.fr/sign-in
+  scope: openid
+  response_type: id_token
+  response_mode: form_post
+}

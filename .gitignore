@@ -4,6 +4,7 @@
 !.idea/codeStyles
 !.idea/inspectionProfiles
 *.iml
+.DS_Store
 
 ### Maven ###
 target/

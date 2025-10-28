@@ -1,0 +1,22 @@
+meta {
+  name: employees
+  type: http
+  seq: 9
+}
+
+get {
+  url: https://api.my.silae.fr/v1/managed-companies/employees?companies=3016&groupType=TEAM&startDate=2025-10-27&endDate=2025-11-26
+  body: none
+  auth: none
+}
+
+params:query {
+  companies: 3016
+  groupType: TEAM
+  startDate: 2025-10-27
+  endDate: 2025-11-26
+}
+
+headers {
+  Origin: https://my.silae.fr
+}

@@ -1,0 +1,18 @@
+meta {
+  name: leave-days
+  type: http
+  seq: 6
+}
+
+get {
+  url: https://api.my.silae.fr/v2/managed-companies/leave-days?companies=3016&start=2025-10-27&end=2025-10-27&groupType=TEAM
+  body: none
+  auth: none
+}
+
+params:query {
+  companies: 3016
+  start: 2025-10-27
+  end: 2025-10-27
+  groupType: TEAM
+}
