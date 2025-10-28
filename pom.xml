@@ -23,6 +23,7 @@
         <!-- Plugin versions -->
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <openapi-generator-maven-plugin.version>7.16.0</openapi-generator-maven-plugin.version>
     </properties>
 
@@ -64,6 +65,11 @@
         </dependency>
 
         <!-- Others -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -112,9 +118,9 @@
                             <inputSpec>swagger-api.yml</inputSpec>
                             <output>${project.basedir}/gen</output>
                             <generatorName>java</generatorName>
-                            <apiPackage>${project.groupId}.mysilae.client.api</apiPackage>
-                            <modelPackage>${project.groupId}.mysilae.client.model</modelPackage>
-                            <invokerPackage>${project.groupId}.mysilae.client.invoker</invokerPackage>
+                            <apiPackage>${project.groupId}.mysilae.api.client</apiPackage>
+                            <modelPackage>${project.groupId}.mysilae.api.client.model</modelPackage>
+                            <invokerPackage>${project.groupId}.mysilae.invoker</invokerPackage>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>mysilae-java-client</artifactId>
                             <artifactVersion>${project.version}</artifactVersion>
@@ -136,9 +142,9 @@
                             <inputSpec>swagger-auth.yml</inputSpec>
                             <output>${project.basedir}/gen</output>
                             <generatorName>java</generatorName>
-                            <apiPackage>${project.groupId}.mysilae.client.auth.api</apiPackage>
-                            <modelPackage>${project.groupId}.mysilae.client.auth.model</modelPackage>
-                            <invokerPackage>${project.groupId}.mysilae.client.auth.invoker</invokerPackage>
+                            <apiPackage>${project.groupId}.mysilae.auth.client</apiPackage>
+                            <modelPackage>${project.groupId}.mysilae.auth.client.model</modelPackage>
+                            <invokerPackage>${project.groupId}.mysilae.invoker</invokerPackage>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>mysilae-java-client</artifactId>
                             <artifactVersion>${project.version}</artifactVersion>
@@ -149,6 +155,26 @@
                                 <useJakartaEe>true</useJakartaEe>
                                 <openApiNullable>false</openApiNullable>
                             </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build-helper-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/gen/src/main/java</source>
+                            </sources>
                         </configuration>
                     </execution>
                 </executions>
