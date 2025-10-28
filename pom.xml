@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency versions -->
-        <ms-parent.version>1.22.0</ms-parent.version>
+        <ms-parent.version>1.23.0</ms-parent.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <!-- Plugin versions -->
