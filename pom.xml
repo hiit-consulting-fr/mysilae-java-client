@@ -24,7 +24,7 @@
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-        <openapi-generator-maven-plugin.version>7.18.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.19.0</openapi-generator-maven-plugin.version>
     </properties>
 
     <scm>
