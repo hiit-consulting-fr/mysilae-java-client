@@ -24,13 +24,10 @@ jobs:
           java-version: 25
           distribution: 'zulu'
           cache: maven
-          server-id: github
-          server-username: 'MAVEN_USER'
-          server-password: 'MAVEN_PASSWORD'
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 22.x
+          node-version: 26
 
       - name: Lint
         run: >-
@@ -41,8 +38,6 @@ jobs:
           mvn clean verify
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          MAVEN_USER: ${{ vars.MAVEN_USER }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v6.0.1
+        uses: advanced-security/maven-dependency-submission-action@v6

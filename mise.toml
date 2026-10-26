@@ -1,0 +1,6 @@
+[tools]
+mvnd = "latest"
+maven = "3"
+java = "zulu-25"
+node = "26"
+pnpm = "12"
